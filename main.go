@@ -19,6 +19,7 @@ func main() {
 	fmt.Printf("Serverman running at port %v.\n", port)
 
 	http.HandleFunc("/update/", handleUpdate)
+	http.HandleFunc("/status/", handleStatus)
 	http.HandleFunc("/query/", handleQuery)
 	http.HandleFunc("/", handleUnknown)
 	if err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil); err != nil {
@@ -29,6 +30,38 @@ func main() {
 func handleUnknown(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(404)
 	w.Write([]byte("Could not find a valid end point.\n"))
+}
+
+type Status struct {
+	DictionaryId string `json:"dictionary_id"`
+	DeletedAt    string `json:"deleted_at"`
+	ItemKey      string `json:"item_key"`
+	UpdatedAt    string `json:"updated_at"`
+	ServiceId    string `json:"service_id"`
+	CreatedAt    string `json:"created_at"`
+	ItemValue    string `json:"item_value"`
+}
+
+func handleStatus(w http.ResponseWriter, r *http.Request) {
+	message := "===============================STATUS====================================\n"
+	message += describeRequest(r)
+	message += writeResponse(w, [...]Status{{
+		"6orfaFqqsEg3339BCQvGQN",
+		"",
+		"disqus-turkishgroup",
+		"2019-05-14T13:19:44Z",
+		"5U03eCXISUxUTOZMNkNDiu",
+		"2019-05-14T13:19:44Z",
+		"50000"}, {
+		"6orfaFqqsEg3339BCQvGQN",
+		"",
+		"disqus-turkishgroup",
+		"2019-05-14T13:19:44Z",
+		"5U03eCXISUxUTOZMNkNDiu",
+		"2019-05-14T13:19:44Z",
+		"50000"},
+	})
+	fmt.Print(message)
 }
 
 func handleQuery(w http.ResponseWriter, r *http.Request) {
